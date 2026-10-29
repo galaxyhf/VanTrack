@@ -16,6 +16,7 @@
     "test:e2e": "playwright test",
     "db:generate": "pnpm --filter @vantrack/database generate",
     "db:migrate": "pnpm --filter @vantrack/database migrate",
+    "db:check": "pnpm --filter @vantrack/database check",
     "db:seed": "pnpm --filter @vantrack/database seed",
     "admin:create": "pnpm --filter @vantrack/database admin:create"
   },

@@ -41,9 +41,13 @@ Medição dos tokens principais; não equivale a uma auditoria WCAG integral. Co
 
 ## Limites e pendências externas
 
-- Neon: projeto VanTrack identificado e branch `vantrack-development` criada. A migração externa não foi confirmada devido à rede. As credenciais ficam somente no `.env` ignorado. Conforme solicitado, o restante foi concluído sem insistir nessa conexão.
+- Neon validado em 29/10/2026: conexão com as credenciais existentes, migração Drizzle, seed demonstrativo e `pnpm db:check` passaram. A API local conectada ao Neon respondeu ao healthcheck (200), login de administrador (201), consulta autenticada de viagens (200) e logout (201). O `.env` local passou de `embedded` para `neon`; as credenciais permanecem ignoradas pelo Git. O acesso externo exigiu execução fora da restrição de rede do sandbox. Essa validação foi pela API; os E2E no navegador continuam sendo a evidência anterior com PGlite.
 - GPS físico, Safari/iOS/Android, instalação PWA em aparelho e rastreamento sob bloqueio da tela não foram verificados. Navegadores não garantem execução em segundo plano.
 - SMTP externo e hospedagem Vercel/Node não foram publicados nem validados. O projeto inclui configuração e instruções.
 - ETA usa roteamento/estimativa; não contém trânsito real. O provedor público OSRM não tem SLA de produção.
 - Web Push permanece futuro, conforme escopo. App nativo não faz parte desta versão.
 - API preparada inicialmente para uma instância; escala horizontal exige adapter Socket.IO, rate limiter e worker distribuídos, conforme o guia de deploy.
+
+## Remoção do banco local em 29/10/2026
+
+O adapter persistente PGlite, a seleção de modo e os diretórios `.data/vantrack` e `.data/e2e` foram removidos. A aplicação usa apenas Neon. PGlite permanece como dependência de desenvolvimento da API para testes em memória. E2E agora exige uma branch Neon exclusiva; os cinco fluxos históricos acima foram executados na configuração anterior. O `.env` foi reduzido às duas URLs Neon, ao segredo de sessão e às três opções de demonstração; outras opções usam os padrões do código.

@@ -1,17 +1,11 @@
 import { spawn } from 'node:child_process';
-import { mkdtemp, rm } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
 import { config } from 'dotenv';
 config({ quiet: true });
-const data = await mkdtemp(join(tmpdir(), 'vantrack-build-'));
 const child = spawn(process.execPath, ['apps/api/dist/apps/api/src/main.js'], {
   env: {
     ...process.env,
     PORT: '4200',
     NODE_ENV: 'test',
-    DATABASE_MODE: 'embedded',
-    DATABASE_DATA_DIR: join(data, 'db'),
   },
   stdio: ['ignore', 'ignore', 'pipe'],
 });
@@ -19,7 +13,7 @@ let stderr = '';
 child.stderr.on('data', (chunk) => (stderr += chunk));
 try {
   let ready = false;
-  for (let i = 0; i < 60; i++) {
+  for (let i = 0; i < 300; i++) {
     if (child.exitCode !== null) throw new Error('A API compilada encerrou antes do healthcheck');
     try {
       const r = await fetch('http://localhost:4200/health');
@@ -46,5 +40,4 @@ try {
 } finally {
   child.kill('SIGTERM');
   await new Promise((resolve) => child.once('exit', resolve));
-  await rm(data, { recursive: true, force: true });
 }

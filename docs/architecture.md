@@ -41,6 +41,6 @@ erDiagram
 7. Administração: indicadores de SQL e CSV.
 8. Finalização: lint, typecheck, testes e navegador. Evidência real é registrada em docs/validation.md.
 
-## Desenvolvimento sem rede Neon
+## Banco de dados
 
-`DATABASE_MODE=embedded` usa PGlite com o mesmo schema Drizzle e as mesmas migrações PostgreSQL, com persistência local. O adapter é um limite explícito e coberto por testes de integração. Produção recusa esse modo. Não há substituição automática quando uma conexão Neon falha.
+A aplicação e as migrações usam exclusivamente o Neon. PGlite é uma dependência de desenvolvimento da API, utilizada apenas nos testes de integração em memória; não faz parte do adapter de banco da aplicação e não persiste dados locais.

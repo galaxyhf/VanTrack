@@ -1,9 +1,11 @@
 import { beforeAll, afterAll, describe, expect, it } from 'vitest';
 import { migrate } from 'drizzle-orm/pglite/migrator';
-import type { PgliteDatabase } from 'drizzle-orm/pglite';
+import { drizzle } from 'drizzle-orm/pglite';
+import { PGlite } from '@electric-sql/pglite';
+import * as schema from '@vantrack/database';
+import type { Database } from '@vantrack/database';
 import { eq } from 'drizzle-orm';
 import {
-  createDatabase,
   users,
   vehicles,
   stops,
@@ -20,7 +22,7 @@ import { EventsService } from '../common/events.service';
 import { NotificationsService } from '../communication/notifications.service';
 import type { DatabaseService } from '../common/database.service';
 import type { Principal } from '../auth/auth.service';
-let connection: ReturnType<typeof createDatabase>,
+let connection: { db: Database; pool: { end(): Promise<void> } },
   service: ReservationsService,
   operations: OperationsService,
   repo: TripsRepository;
@@ -41,9 +43,11 @@ const principal = (u: typeof users.$inferSelect): Principal => ({
   sessionId: crypto.randomUUID(),
 });
 beforeAll(async () => {
-  connection = createDatabase('', 'embedded', 'memory://');
+  const client = new PGlite();
+  const testDb = drizzle(client, { schema });
+  connection = { db: testDb as unknown as Database, pool: { end: () => client.close() } };
   const db = connection.db;
-  await migrate(db as unknown as PgliteDatabase, {
+  await migrate(testDb, {
     migrationsFolder: 'packages/database/migrations',
   });
   const database = { db } as DatabaseService;

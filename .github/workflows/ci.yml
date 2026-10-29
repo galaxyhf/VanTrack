@@ -7,8 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
-      DATABASE_MODE: embedded
-      DATABASE_DATA_DIR: ${{ github.workspace }}/.data/ci
       DATABASE_URL: postgresql://unused:unused@localhost/unused
       DATABASE_URL_UNPOOLED: postgresql://unused:unused@localhost/unused
       JWT_SECRET: ci-only-secret-at-least-forty-characters-long-never-production
@@ -31,12 +29,19 @@ jobs:
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test
-      - run: pnpm db:migrate
-      - run: pnpm db:seed
       - run: pnpm build
-      - run: node scripts/smoke-api-build.mjs
-      - run: pnpm exec playwright install --with-deps chromium
-      - run: pnpm test:e2e
+      - name: Neon e E2E (branch exclusiva)
+        env:
+          TEST_DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
+          TEST_DATABASE_URL_UNPOOLED: ${{ secrets.TEST_DATABASE_URL_UNPOOLED }}
+        run: |
+          if [ -z "$TEST_DATABASE_URL" ] || [ -z "$TEST_DATABASE_URL_UNPOOLED" ]; then
+            echo "Neon/E2E não executados: configure os secrets de uma branch exclusiva."
+            exit 0
+          fi
+          pnpm exec playwright install --with-deps chromium
+          pnpm test:e2e
+          DATABASE_URL="$TEST_DATABASE_URL" node scripts/smoke-api-build.mjs
       - uses: actions/upload-artifact@v4
         if: failure()
         with:

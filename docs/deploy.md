@@ -8,7 +8,7 @@ Preparado para Vercel como projeto Next.js, Root Directory `apps/web`, pnpm 11, 
 
 Use hospedagem Node.js persistente com suporte a WebSocket e HTTPS. Build na raiz: `pnpm --filter @vantrack/api build`. Início: `pnpm --filter @vantrack/api start`. O build inclui os pacotes compartilhados e corrige seus caminhos para executar JavaScript compilado.
 
-Configure `NODE_ENV=production`, `DATABASE_MODE=neon`, `DATABASE_URL` pooled, `DATABASE_URL_UNPOOLED` direta, `JWT_SECRET` aleatório forte, `WEB_ORIGIN` exata do frontend, SMTP e `SIMULATOR_ENABLED=false`. Produção rejeita banco embarcado. API e frontend devem usar subdomínios do mesmo domínio registrável para cookies SameSite=Lax. Não hospede cada um em sites sem relação; nesse caso use um proxy sob o mesmo domínio.
+Configure `NODE_ENV=production`, `DATABASE_URL` pooled, `DATABASE_URL_UNPOOLED` direta, `JWT_SECRET` aleatório forte, `WEB_ORIGIN` exata do frontend, SMTP e `SIMULATOR_ENABLED=false`. API e frontend devem usar subdomínios do mesmo domínio registrável para cookies SameSite=Lax. Não hospede cada um em sites sem relação; nesse caso use um proxy sob o mesmo domínio.
 
 Aplique `pnpm db:migrate` uma vez como release task com URL direta. Não use o seed demo em produção. Crie o primeiro administrador com `pnpm admin:create` e variáveis privadas `ADMIN_NAME`, `ADMIN_EMAIL`, `ADMIN_PASSWORD` (mínimo 9 caracteres); o comando recusa duplicação e não altera usuários existentes. Remova essas variáveis após o comando.
 

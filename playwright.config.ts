@@ -1,9 +1,26 @@
 import { defineConfig } from '@playwright/test';
-import { resolve } from 'node:path';
-const dbDir = resolve('.data/e2e');
+import { config } from 'dotenv';
+config({ quiet: true });
+const testUrl = process.env.TEST_DATABASE_URL;
+const testDirectUrl = process.env.TEST_DATABASE_URL_UNPOOLED;
+if (!testUrl || !testDirectUrl)
+  throw new Error(
+    'E2E exige TEST_DATABASE_URL e TEST_DATABASE_URL_UNPOOLED de uma branch Neon exclusiva',
+  );
+const endpoint = (url: string) => {
+  const parsed = new URL(url);
+  return parsed.hostname.replace('-pooler', '') + parsed.pathname;
+};
+if (
+  process.env.DATABASE_URL &&
+  [testUrl, testDirectUrl].some((url) => endpoint(url) === endpoint(process.env.DATABASE_URL!))
+)
+  throw new Error('E2E não pode usar o banco da aplicação');
+if (endpoint(testUrl) !== endpoint(testDirectUrl))
+  throw new Error('As duas URLs de teste devem apontar para o mesmo banco Neon');
 const apiEnv = {
-  DATABASE_MODE: 'embedded',
-  DATABASE_DATA_DIR: dbDir,
+  DATABASE_URL: testUrl,
+  DATABASE_URL_UNPOOLED: testDirectUrl,
   WEB_ORIGIN: 'http://localhost:3100',
   PORT: '4100',
   NODE_ENV: 'test',

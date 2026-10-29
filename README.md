@@ -12,12 +12,13 @@ cp .env.example .env
 openssl rand -base64 48
 ```
 
-Preencha `JWT_SECRET` com o segredo gerado; escolha uma senha de desenvolvimento com pelo menos 9 caracteres em `DEMO_PASSWORD`; ajuste `DATABASE_DATA_DIR` para um caminho absoluto dentro deste projeto. O arquivo `.env` fica na raiz e é ignorado pelo Git. Nunca publique credenciais reais.
+Preencha `JWT_SECRET` com o segredo gerado; escolha uma senha de desenvolvimento com pelo menos 9 caracteres em `DEMO_PASSWORD`; configure `DATABASE_URL` pooled e `DATABASE_URL_UNPOOLED` direta do seu banco Neon. O arquivo `.env` fica na raiz e é ignorado pelo Git. Nunca publique credenciais reais.
 
-**Desenvolvimento sem acesso ao Neon:** mantenha `DATABASE_MODE=embedded`. PGlite executa PostgreSQL em WebAssembly com persistência em disco; os dados não são mocks. Use apenas um processo da API por diretório de dados. Esse modo é bloqueado em produção.
+A aplicação usa exclusivamente o Neon; não há banco local nem seleção de modo de banco.
 
 ```sh
 pnpm db:migrate
+pnpm db:check
 pnpm db:seed
 pnpm dev
 ```
@@ -28,7 +29,22 @@ pnpm dev
 
 O seed é idempotente e recusa produção. Contas: `admin@vantrack.demo`, `motorista@vantrack.demo`, `motorista2@vantrack.demo`, `professor@vantrack.demo` e `professor2@vantrack.demo` até `professor10@vantrack.demo`. Todas usam o valor local de `DEMO_PASSWORD`. O cadastro público cria apenas professores.
 
-**Com Neon:** configure as URLs pooled e direta, selecione `DATABASE_MODE=neon`, execute a mesma migração. O driver oficial Neon usa WebSocket sobre HTTPS e suporta transações interativas. A rede atual bloqueia o Neon; a validação externa está pendente. Não há troca automática silenciosa para dados locais.
+**Com Neon:** o driver oficial usa WebSocket sobre HTTPS e suporta transações interativas. `pnpm db:check` verifica conexão, acesso à tabela de usuários e uma transação pelo mesmo adapter da API. Em caso de falha, confira as URLs, a migração e o acesso de rede ao endpoint Neon.
+
+## Variáveis de ambiente
+
+O `.env` básico tem seis variáveis:
+
+| Variável                | Finalidade                                             |
+| ----------------------- | ------------------------------------------------------ |
+| `DATABASE_URL`          | Conexão pooled com o Neon usada pela API.              |
+| `DATABASE_URL_UNPOOLED` | Conexão direta com o mesmo banco, usada nas migrações. |
+| `JWT_SECRET`            | Segredo para assinar e validar as sessões.             |
+| `SEED_DEMO`             | Autoriza o comando que cria dados demonstrativos.      |
+| `DEMO_PASSWORD`         | Senha das contas criadas pelo seed.                    |
+| `SIMULATOR_ENABLED`     | Habilita o simulador das viagens demonstrativas.       |
+
+As três últimas são opcionais fora da demonstração. Portas e endereços de desenvolvimento já têm padrão no código: API 4000 e web 3000. Só configure `PORT`, `WEB_ORIGIN` e `NEXT_PUBLIC_API_URL` se mudar esses endereços. `ROUTING_URL` tem padrão OSRM. E-mail é opcional: `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD` e `MAIL_FROM` só são necessários ao configurar entrega de e-mail. Em hospedagem, configure também `NODE_ENV=production`; veja o guia de deploy.
 
 ## Estrutura
 
@@ -68,7 +84,7 @@ pnpm test:e2e
 pnpm format:check
 ```
 
-Os testes de integração usam PostgreSQL embarcado em memória. Os E2E usam portas exclusivas 3100/4100, `.data/e2e` e `.next-e2e`, sem acessar Neon. A evidência de validação e os limites estão em [Validação](docs/validation.md).
+Os testes de integração usam PostgreSQL em memória exclusivamente para testes. Os E2E usam uma branch Neon exclusiva com `TEST_DATABASE_URL` e `TEST_DATABASE_URL_UNPOOLED`, portas 3100/4100 e `.next-e2e`. A evidência de validação e os limites estão em [Validação](docs/validation.md).
 
 ## Documentação
 
