@@ -1,0 +1,11 @@
+packages:
+  - apps/*
+  - packages/*
+allowBuilds:
+  argon2: true
+  esbuild: true
+  sharp: true
+  '@scarf/scarf': false
+verifyDepsBeforeRun: false
+# Explicitly denied analytics postinstall remains blocked.
+strictDepBuilds: false

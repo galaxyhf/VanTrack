@@ -1,0 +1,45 @@
+{
+  "name": "@vantrack/api",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "build": "tsc -p tsconfig.build.json && node ../../scripts/fix-api-build.mjs",
+    "start": "node dist/apps/api/src/main.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.1.16",
+    "@nestjs/core": "^11.1.16",
+    "@nestjs/platform-express": "^11.1.16",
+    "@nestjs/websockets": "^11.1.16",
+    "@nestjs/platform-socket.io": "^11.1.16",
+    "@nestjs/swagger": "^11.2.6",
+    "@nestjs/throttler": "^6.5.0",
+    "@nestjs/jwt": "^11.0.2",
+    "@nestjs/schedule": "^6.1.1",
+    "@vantrack/database": "workspace:*",
+    "@vantrack/shared": "workspace:*",
+    "argon2": "^0.44.0",
+    "cookie-parser": "^1.4.7",
+    "helmet": "^8.1.0",
+    "socket.io": "^4.8.3",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
+    "drizzle-orm": "^0.45.1",
+    "pg": "^8.18.0",
+    "zod": "^4.3.6",
+    "dotenv": "^17.3.1",
+    "nodemailer": "^7.0.12",
+    "cookie": "^1.0.2",
+    "@electric-sql/pglite": "^0.3.15",
+    "@neondatabase/serverless": "^1.0.2",
+    "ws": "^8.19.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/cookie-parser": "^1.4.10",
+    "@types/nodemailer": "^7.0.11",
+    "tsx": "^4.21.0"
+  }
+}

@@ -1,0 +1,14 @@
+pnpm-lock.yaml
+.next
+dist
+node_modules
+coverage
+packages/database/migrations/meta
+docs/requirements.md
+
+.next-e2e
+playwright-report
+test-results
+.data
+
+apps/web/next-env.d.ts

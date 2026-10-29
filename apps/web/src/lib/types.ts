@@ -1,0 +1,101 @@
+import type { User, TripStatus } from '@vantrack/shared';
+export type { User };
+export type Stop = {
+  id: string;
+  name: string;
+  address: string;
+  latitude: number;
+  longitude: number;
+  isDemo: boolean;
+  order: number;
+  kind: string;
+};
+export type Vehicle = {
+  id: string;
+  plate: string;
+  model: string;
+  manufacturer: string;
+  year: number;
+  color: string;
+  capacity: number;
+  internalCode: string;
+  status: string;
+};
+export type Route = {
+  id: string;
+  name: string;
+  origin: string;
+  destination: string;
+  estimatedDistance: number;
+  estimatedDuration: number;
+  geometry: [number, number][] | null;
+};
+export type Reservation = {
+  id: string;
+  tripId: string;
+  userId: string;
+  status: string;
+  boardingStopId: string;
+  createdAt: string;
+};
+export type Trip = {
+  id: string;
+  status: TripStatus;
+  routeId: string;
+  vehicleId: string;
+  driverId: string;
+  scheduledDeparture: string;
+  scheduledArrival: string;
+  actualDeparture: string | null;
+  actualArrival: string | null;
+  isDemo: boolean;
+  trackingPaused: boolean;
+  route: Route;
+  vehicle: Vehicle;
+  driver: { id: string; name: string };
+  occupied: number;
+  available: number;
+  stops?: Stop[];
+  passengers?: Array<Reservation & { name: string }>;
+  myReservation?: Reservation | null;
+};
+export type Location = {
+  id: string;
+  latitude: number;
+  longitude: number;
+  accuracy: number;
+  heading: number | null;
+  speed: number | null;
+  recordedAt: string;
+  isSimulated: boolean;
+};
+export type Eta = {
+  available: boolean;
+  reason?: string;
+  arrival?: string;
+  minutes?: number;
+  distance?: number;
+  delayMinutes?: number;
+  stale?: boolean;
+  source?: string;
+  updatedAt?: string;
+  isSimulated?: boolean;
+};
+export type Notification = {
+  id: string;
+  type: string;
+  title: string;
+  content: string;
+  isRead: boolean;
+  tripId: string | null;
+  createdAt: string;
+};
+export type Message = {
+  id: string;
+  senderId: string;
+  senderName: string;
+  content: string;
+  operational: boolean;
+  createdAt: string;
+};
+export type List<T> = { data: T[]; page?: number; limit?: number };

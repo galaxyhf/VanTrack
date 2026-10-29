@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": ["**/*.test.ts"],
+  "compilerOptions": {
+    "rootDir": "../..",
+    "paths": {
+      "@vantrack/database": ["../../packages/database/src/index.ts"],
+      "@vantrack/shared": ["../../packages/shared/src/index.ts"]
+    }
+  }
+}

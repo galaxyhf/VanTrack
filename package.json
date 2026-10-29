@@ -1,0 +1,35 @@
+{
+  "name": "vantrack",
+  "private": true,
+  "packageManager": "pnpm@11.0.4",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter @vantrack/api --filter @vantrack/web dev",
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "db:generate": "pnpm --filter @vantrack/database generate",
+    "db:migrate": "pnpm --filter @vantrack/database migrate",
+    "db:seed": "pnpm --filter @vantrack/database seed",
+    "admin:create": "pnpm --filter @vantrack/database admin:create"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "eslint": "^9.39.0",
+    "typescript-eslint": "^8.57.0",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "prettier": "^3.8.1",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4",
+    "@playwright/test": "^1.58.2",
+    "tsx": "^4.21.0",
+    "@types/node": "^22.19.0",
+    "dotenv": "^17.3.1"
+  }
+}
